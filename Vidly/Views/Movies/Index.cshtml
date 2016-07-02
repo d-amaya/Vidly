@@ -15,7 +15,7 @@ else
             @foreach (var movie in Model.Movies)
             {
                 <li style="text-decoration: none">
-                    @Html.ActionLink(movie.Name, "Movies", "Movies", new { id = movie.Id }, null)
+                    @Html.ActionLink(movie.Name, "Details", "Movies", new { id = movie.Id }, null)
                     <br />
                 </li>
             }

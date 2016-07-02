@@ -16,14 +16,15 @@ namespace Vidly.Controllers
             new Movie() { Id = 2, Name = "Movies Number 2" }
         };
 
+        [Route("Movies")]
         public ActionResult Index()
         {
             MovieViewModel movieViewModel = new MovieViewModel() { Movies = movies };
             return View(movieViewModel);
         }
 
-        [Route("Movies/{id}")]
-        public ActionResult Movies(int id)
+        [Route("Movies/Details/{id}")]
+        public ActionResult Details(int id)
         {
             foreach (var m in movies)
             {

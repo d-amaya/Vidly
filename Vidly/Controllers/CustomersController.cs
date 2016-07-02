@@ -8,34 +8,38 @@ using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
+    [Route("Customers")]
     public class CustomersController : Controller
     {
-        private readonly List<Customer> customers = new List<Customer>()
+        private ApplicationDbContext _context;
+
+        public CustomersController()
         {
-            new Customer() { Id = 1, Name = "John Smith" },
-            new Customer() { Id = 2, Name = "Mary Williams" }
-        };
+            _context = new ApplicationDbContext();
+        }
 
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
 
-        // GET: Customers
+        [Route("Customers")]
         public ActionResult Index()
         {
+            List<Customer> customers = _context.Customers.ToList();
             CustomerViewModel customerViewModel = new CustomerViewModel() { Customers = customers };
             return View(customerViewModel);
         }
 
-        [Route("Customers/{id}")]
-        public ActionResult Customers(int id)
+        [Route("Customers/Details/{id}")]
+        public ActionResult Details(int id)
         {
-            foreach (var c in customers)
+            Customer customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            if (customer == null)
             {
-                if (c.Id == id)
-                {
-                    return View(c);
-                }
+                return HttpNotFound();
             }
-
-            return HttpNotFound();
+            return View(customer);
         }
     }
 }
