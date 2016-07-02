@@ -4,43 +4,36 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Vidly.Models;
+using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        // GET: Movies/Random
-        public ActionResult Random()
+        private readonly List<Movie> movies = new List<Movie>()
         {
-            var movie = new Movie() { Name = "Shrek!" };
-            return View(movie);
+            new Movie() { Id = 1, Name = "Movie Number 1" },
+            new Movie() { Id = 2, Name = "Movies Number 2" }
+        };
+
+        public ActionResult Index()
+        {
+            MovieViewModel movieViewModel = new MovieViewModel() { Movies = movies };
+            return View(movieViewModel);
         }
 
-        public ActionResult Edit(int id)
+        [Route("Movies/{id}")]
+        public ActionResult Movies(int id)
         {
-            return Content($"id= {id}");
-        }
-
-        public ActionResult Index(int? pageIndex, string sortBy)
-        {
-            if (!pageIndex.HasValue)
+            foreach (var m in movies)
             {
-                pageIndex = 1;
+                if (m.Id == id)
+                {
+                    return View(m);
+                }
             }
 
-            if (String.IsNullOrWhiteSpace(sortBy))
-            {
-                sortBy = "Name";
-            }
-
-            //return Content($"pageIndex={pageIndex}&sortBy={sortBy}");
-            return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
-        }
-
-        [Route("movies/released/{year:minlength(4):maxlength(4)}/{month:regex(\\d{2}):range(1, 12)}")]
-        public ActionResult ByRealeaseDate(int year, int month)
-        {
-            return Content($"Date={year}/{month}");
+            return HttpNotFound();
         }
     }
 }
