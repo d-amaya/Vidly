@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -23,23 +24,72 @@ namespace Vidly.Controllers
             _context.Dispose();
         }
 
+        [HttpGet]
         [Route("Movies")]
         public ActionResult Index()
         {
-            List<Movie> movies = _context.Movies.Include(m => m.Genre).ToList();
+            List<Movie> movies = _context.Movies.Include(m => m.GenreMovie).ToList();
             MovieViewModel movieViewModel = new MovieViewModel() { Movies = movies };
             return View(movieViewModel);
         }
 
-        [Route("Movies/Details/{id}")]
-        public ActionResult Details(int id)
+        [HttpGet]
+        [Route("Movies/New")]
+        public ActionResult New()
         {
-            Movie movie = _context.Movies.Include(m => m.Genre).FirstOrDefault(m => m.Id == id);
+            MovieFormViewModel viewModel = new MovieFormViewModel()
+            {
+                Movie = new Movie(),
+                Genres = _context.Genres.ToList()
+            };
+            return View("MovieForm", viewModel);
+        }
+
+        [HttpGet]
+        [Route("Movies/{id}")]
+        public ActionResult Edit(int id)
+        {
+            Movie movie = _context.Movies.Include(m => m.GenreMovie).FirstOrDefault(m => m.Id == id);
             if (movie == null)
             {
                 return HttpNotFound();
             }
-            return View(movie);
+
+            MovieFormViewModel viewModel = new MovieFormViewModel()
+            {
+                Movie = movie,
+                Genres = _context.Genres.ToList()
+            };
+
+            return View("MovieForm", viewModel);
+        }
+
+        [HttpPost]
+        [Route(Name = "Movies")]
+        public ActionResult Save(Movie movie)
+        {
+            var movieInDB = _context.Movies.FirstOrDefault(m => m.Id == movie.Id);
+            if (movieInDB == null)
+            {
+                movie.DateAdded = DateTime.Now;
+                _context.Movies.Add(movie);
+            }
+            else
+            {
+                movieInDB.Name = movie.Name;
+                movieInDB.GenreMovieId = movie.GenreMovieId;
+                movieInDB.NumberInStock = movie.NumberInStock;
+                movieInDB.ReleaseDate = movie.ReleaseDate;
+            }
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return RedirectToAction("Index", "Movies");
         }
     }
 }
