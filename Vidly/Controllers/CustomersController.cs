@@ -27,10 +27,17 @@ namespace Vidly.Controllers
         [Route("Customers")]
         public ActionResult Index()
         {
+            return View();
+        }
+
+        /*[HttpGet]
+        [Route("Customers")]
+        public ActionResult Index()
+        {
             List<Customer> customers = _context.Customers.Include(c => c.MembershipType).ToList();
             CustomerViewModel customerViewModel = new CustomerViewModel() { Customers = customers };
             return View(customerViewModel);
-        }
+        }*/
 
         [HttpGet]
         [Route("Customers/{id}")]

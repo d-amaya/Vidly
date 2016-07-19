@@ -1,4 +1,5 @@
 ﻿@model Vidly.ViewModels.CustomerViewModel
+
 @{
     ViewBag.Title = "Customers";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,39 +7,68 @@
 
 <h2>Customers</h2>
 @Html.ActionLink("NEW CUSTOMER", "New", "Customers", new { @class = "btn btn-primary" })
-<br /><br />
-@if (Model.Customers.Count == 0)
-{
-    <p>There are no customers to show yet.</p>
-}
-else
-{
-    <div style="padding-top: 10px">
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Membership Type</th>
-                    <th>Discount Rate</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var customer in Model.Customers)
-                {
-                    <tr>
-                        <td>
-                            @Html.ActionLink(customer.Name, "Edit", "Customers", new { id = customer.Id }, null)
-                        </td>
-                        <td>
-                            @customer.MembershipType.Name
-                        </td>
-                        <td>
-                            @customer.MembershipType.DiscountRate%
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
 
+<br /><br />
+
+<div style="padding-top: 10px">
+    <table id="customers" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Membership Type</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody> </tbody>
+    </table>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#customers").DataTable({
+                ajax: {
+                    url: "/api/customers",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, customer) {
+                            return "<a href='/customers/" + customer.id + "'>" + customer.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "membershipType",
+                        render: function (data, type, customer) {
+                            return customer.membershipType.name;
+                        }
+                    },
+                    {
+                        data: "id",
+                        render: function (data, type, customer) {
+                            return "<button data-customer-id='" + data + "' class='btn-link js-delete'>Delete</button>";
+                        }
+                    }
+                ]
+
+            });
+
+            $("#customers").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to delete the customer?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/customers/" + button.attr("data-customer-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
