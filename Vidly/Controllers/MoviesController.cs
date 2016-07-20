@@ -24,13 +24,20 @@ namespace Vidly.Controllers
             _context.Dispose();
         }
 
+        //[HttpGet]
+        //[Route("Movies")]
+        //public ActionResult Index()
+        //{
+        //    List<Movie> movies = _context.Movies.Include(m => m.GenreMovie).ToList();
+        //    MovieViewModel movieViewModel = new MovieViewModel() { Movies = movies };
+        //    return View(movieViewModel);
+        //}
+
         [HttpGet]
         [Route("Movies")]
         public ActionResult Index()
         {
-            List<Movie> movies = _context.Movies.Include(m => m.GenreMovie).ToList();
-            MovieViewModel movieViewModel = new MovieViewModel() { Movies = movies };
-            return View(movieViewModel);
+            return View();
         }
 
         [HttpGet]
