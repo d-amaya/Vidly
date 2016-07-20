@@ -24,23 +24,12 @@ namespace Vidly.Controllers
         }
 
         [HttpGet]
-        [Route("Customers")]
         public ActionResult Index()
         {
             return View();
         }
 
-        /*[HttpGet]
-        [Route("Customers")]
-        public ActionResult Index()
-        {
-            List<Customer> customers = _context.Customers.Include(c => c.MembershipType).ToList();
-            CustomerViewModel customerViewModel = new CustomerViewModel() { Customers = customers };
-            return View(customerViewModel);
-        }*/
-
         [HttpGet]
-        [Route("Customers/{id}")]
         public ActionResult Edit(int id)
         {
             Customer customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id);
@@ -58,7 +47,6 @@ namespace Vidly.Controllers
         }
 
         [HttpGet]
-        [Route("Customers/New")]
         public ActionResult New()
         {
             var membershipTypes = _context.MembershipTypes.ToList();
@@ -73,7 +61,6 @@ namespace Vidly.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Customers")]
         public ActionResult Save(CustomerFormViewModel viewModel)
         {
             if (!ModelState.IsValid)

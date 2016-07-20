@@ -24,24 +24,13 @@ namespace Vidly.Controllers
             _context.Dispose();
         }
 
-        //[HttpGet]
-        //[Route("Movies")]
-        //public ActionResult Index()
-        //{
-        //    List<Movie> movies = _context.Movies.Include(m => m.GenreMovie).ToList();
-        //    MovieViewModel movieViewModel = new MovieViewModel() { Movies = movies };
-        //    return View(movieViewModel);
-        //}
-
         [HttpGet]
-        [Route("Movies")]
         public ActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        [Route("Movies/New")]
         public ActionResult New()
         {
             MovieFormViewModel viewModel = new MovieFormViewModel()
@@ -53,7 +42,6 @@ namespace Vidly.Controllers
         }
 
         [HttpGet]
-        [Route("Movies/{id}")]
         public ActionResult Edit(int id)
         {
             Movie movie = _context.Movies.Include(m => m.GenreMovie).FirstOrDefault(m => m.Id == id);
@@ -73,7 +61,6 @@ namespace Vidly.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route(Name = "Movies")]
         public ActionResult Save(Movie movie)
         {
             if (!ModelState.IsValid)
