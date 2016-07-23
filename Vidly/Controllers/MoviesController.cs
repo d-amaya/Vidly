@@ -27,10 +27,15 @@ namespace Vidly.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            return View();
+            if (User.IsInRole(RoleName.CAN_MANAGE_MOVIES))
+            {
+                return View("List");
+            }
+            return View("ReadOnlyList");
         }
 
         [HttpGet]
+        [Authorize(Roles = RoleName.CAN_MANAGE_MOVIES)]
         public ActionResult New()
         {
             MovieFormViewModel viewModel = new MovieFormViewModel()
