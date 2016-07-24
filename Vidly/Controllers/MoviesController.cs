@@ -47,6 +47,7 @@ namespace Vidly.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = RoleName.CAN_MANAGE_MOVIES)]
         public ActionResult Edit(int id)
         {
             Movie movie = _context.Movies.Include(m => m.GenreMovie).FirstOrDefault(m => m.Id == id);
@@ -66,6 +67,7 @@ namespace Vidly.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleName.CAN_MANAGE_MOVIES)]
         public ActionResult Save(Movie movie)
         {
             if (!ModelState.IsValid)
