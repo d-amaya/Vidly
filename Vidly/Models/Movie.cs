@@ -33,5 +33,7 @@ namespace Vidly.Models
         [DisplayName("Number In Stock")]
         [Range(minimum:1, maximum: 20, ErrorMessage = "El cantidad de peliculas en stock debe estar entre 1 y 20.")]
         public short NumberInStock { get; set; }
+
+        public short NumberAvailable { get; set; }
     }
 }
